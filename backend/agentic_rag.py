@@ -356,8 +356,8 @@ Answer:"""
     answer = response.content
     return state.model_copy(update={"ans": answer})
 
-def should_retrieve(state: AgentState)-> str:
-    if state["needs_retrieval"]:
+def should_retrieve(state: AgentState) -> str:
+    if state.needs_retrieval:
         return "retrieve"
     else:
         return "generate"
@@ -379,7 +379,14 @@ workflow.add_node("generate_ans", generate_ans)
 workflow.add_edge(START, "decide_retrieval")
 
 # Normal edge
-workflow.add_edge("decide_retrieval", "route_query_type_node")
+workflow.add_conditional_edges(
+    "decide_retrieval",
+    should_retrieve,
+    {
+        "retrieve": "route_query_type_node",
+        "generate": "generate_ans"
+    }
+)
 
 # Conditional routing
 workflow.add_conditional_edges(
