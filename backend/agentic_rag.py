@@ -17,7 +17,7 @@ MONGO_URI = os.getenv("MONGO_URI")
 client = MongoClient(MONGO_URI)
 db = client["campus_ai"]
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-llm = ChatGroq(groq_api_key= os.getenv("GROQ_API_KEY") , model_name="llama-3.1-8b-instant",temperature=0.1,max_tokens=1024)
+llm = ChatGroq(groq_api_key= os.getenv("GROQ_API_KEY") , model_name="openai/gpt-oss-20b",temperature=0.1,max_tokens=1024)
 
 # Decide whether to retrieve info from vectorDB or not.
 def decide_retrieval(state: AgentState) -> AgentState:
@@ -351,7 +351,7 @@ Don't add this in answer "based on provided context" and something like that giv
 Answer:"""
     else:
         prompt = f"Answer the following question: {question}"
-    llm = ChatGroq(groq_api_key= os.getenv("GROQ_API_KEY2") , model_name="llama-3.1-8b-instant",temperature=0.1,max_tokens=1024)
+    llm = ChatGroq(groq_api_key= os.getenv("GROQ_API_KEY2") , model_name="openai/gpt-oss-20b",temperature=0.1,max_tokens=1024)
     response = llm.invoke(prompt)
     answer = response.content
     return state.model_copy(update={"ans": answer})
